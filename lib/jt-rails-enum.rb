@@ -1,37 +1,48 @@
 module JT
 	module Rails
 		module Enum
-			extend ActiveSupport::Concern
 
-			class_methods do
+			module Enumerable
+				extend ActiveSupport::Concern
 
-				def jt_enum(definitions)
-					klass = self
+				class_methods do
 
-					definitions.each do |field, values|
+					def jt_enum(definitions)
+						klass = self
 
-						enum_values = ActiveSupport::HashWithIndifferentAccess.new
+						definitions.each do |field, values|
 
-						klass.singleton_class.send(:define_method, field.to_s.pluralize) { enum_values }
+							enum_values = ActiveSupport::HashWithIndifferentAccess.new
 
-						values.each_with_index do |value, i|
-							value_method_name = "#{field}_#{value}"
+							klass.singleton_class.send(:define_method, field.to_s.pluralize) { enum_values }
 
-							enum_values[value] = i
+							values.each_with_index do |value, i|
+								value_method_name = "#{field}_#{value}"
 
-							define_method("#{value_method_name}?") { self[field] == i }
-							define_method("#{value_method_name}!") { update! field => i }
+								enum_values[value] = i
 
-							klass.scope value_method_name, -> { klass.where field => i }
+								define_method("#{value_method_name}?") { self[field] == i }
+								define_method("#{value_method_name}!") { update! field => i }
+
+								klass.scope value_method_name, -> { klass.where field => i }
+							end
+
+							validates field, allow_nil: true, inclusion: { in: klass.send(field.to_s.pluralize).values } 
+
 						end
-
-						validates field, allow_nil: true, inclusion: { in: klass.send(field.to_s.pluralize).values } 
-
 					end
 				end
 			end
+
+			class Railtie < ::Rails::Railtie
+				initializer 'jt_rails_enum.insert_into_active_record' do |app|
+					ActiveSupport.on_load :active_record do
+						ActiveRecord::Base.send(:include, JT::Rails::Enum::Enumerable)
+					end
+				end
+
+			end
+
 		end
 	end
 end
-
-ActiveRecord::Base.send :include, JT::Rails::Enum
