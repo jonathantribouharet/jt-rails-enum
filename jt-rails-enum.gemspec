@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
 	s.summary = "JTRailsEnum let you use enum in your models"
 	s.description = "JTRailsEnum let you use enum in your models"
 	s.homepage = 'https://github.com/jonathantribouharet/jt-rails-enum'
-	s.version = '1.0.0'
+	s.version = '1.0.1'
 	s.files = `git ls-files`.split("\n")
 	s.require_paths = ['lib']
 	s.authors = ['Jonathan TRIBOUHARET']

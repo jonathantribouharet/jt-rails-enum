@@ -34,4 +34,4 @@ module JT
 	end
 end
 
-ActiveRecord::Base.send :include, JT::Enum
+ActiveRecord::Base.send :include, JT::Rails::Enum
