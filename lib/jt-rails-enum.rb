@@ -25,6 +25,7 @@ module JT
 								define_method("#{value_method_name}!") { update! field => i }
 
 								klass.scope value_method_name, -> { klass.where field => i }
+								klass.scope "#{field}_not_#{value}", -> { klass.where.not(field => i) }
 							end
 
 							validates field, allow_nil: true, inclusion: { in: klass.send(field.to_s.pluralize).values } 

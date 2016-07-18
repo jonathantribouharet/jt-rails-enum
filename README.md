@@ -33,6 +33,9 @@ Scopes and some basic methods are automatically created for each value in the en
 # User.where(confirmation_status: User.confirmation_statuses[:waiting]).first
 user = User.confirmation_status_waiting.first
 
+# User.where.not(confirmation_status: User.confirmation_statuses[:waiting]).first
+user = User.confirmation_status_not_waiting.first
+
 # Equivalent to user.update!(confirmation_status: User.confirmation_statuses[:accepted])
 user.confirmation_status_accepted!
 
